@@ -1,5 +1,5 @@
 /*
- * Fila Circular estatica
+ * Fila Circular estática
 */
 #include <stdio.h>
 
@@ -39,8 +39,6 @@ void inserirElem(circQueue *fila, int elem) {
 	}
 }
 
-// TODO: Imprimindo lista
-
 // Remover elemento
 void removerElem(circQueue *fila) {
 	if (fila->tamanho == 0) {
@@ -48,7 +46,7 @@ void removerElem(circQueue *fila) {
 	} else {
 		// Verificacao para "circularidade"
 		if (fila->cabeca == (TAM-1)) {
-			fila->cabeca == 0;
+			fila->cabeca = 0;
 			fila->tamanho--;
 			printf("\nRemocao efetuada com sucesso. Cabeca=%d/Tamanho=%d\n\n", fila->cabeca, fila->tamanho);
 		} else {
@@ -59,7 +57,58 @@ void removerElem(circQueue *fila) {
 	}
 }
 
+// Impressão circular
+void ImprimeFila (circQueue *fila) {
+	int i, j;
+	
+	// Primeira verificação para evitar filas vazias
+	if (fila->tamanho == 0) {
+		printf("\nA fila esta vazia...\n\n");
+	} else {
+		/* Caso a cauda for maior que a cabeça, a
+		   impressão não precisa da "circularidade"... */
+		if (fila->cauda > fila->cabeca) {
+			
+			// Impressão da cabeça até a cauda
+			for(i=fila->cabeca; i<fila->cauda; i++){ 
+				printf("Fila na posicao [%d]: %d\n", i, fila->items[i]);
+			}
+			
+		} else { // Senão, precisamos imprimir de maneira circular
+		
+			// Primeiro da cabeça até o final do vetor
+			for (i=fila->cabeca; i<TAM; i++) { 
+				/* Verificamos quando chegamos no final, para
+				   assim iniciar um lado que vá de 0 até cauda */
+				if (i==TAM-1) {
+					printf("Fila na posicao [%d]: %d\n", i, fila->items[i]);
+					
+					// Laço que imprime de 0 até a cauda, complementando o primeiro laço
+					for (j=0; j<fila->cauda; j++) {
+						printf("Fila na posicao [%d]: %d\n", j, fila->items[j]);
+					}
+				} else {
+					printf("Fila na posicao [%d]: %d\n", i, fila->items[i]);
+				}
+			}
+		}		
+	}
+}
 
+// Função para testes e visualizar valores
+void depurarFila(circQueue *fila) {
+	int i;
+	
+	printf("\n===FUNCAO DEPURADORA===\n\n");
+	printf("Cabeca: %d\n", fila->cabeca);
+	printf("Cauda: %d\n", fila->cauda);
+	printf("Quantidade de elementos: %d\n", fila->tamanho);
+	
+	printf("\n====== Impressao nao-circular ======\n\n");
+	for (i=0;i<TAM;i++) {
+		printf("Fila[%d]: %d\n", i, fila->items[i]);
+	}
+}
 
 int main() {
 	// Declarando nossa fila e iniciando-a
@@ -75,7 +124,8 @@ int main() {
 		printf("-= QUEUE MENU =-\n\n");
 		printf("1 - Para adicionar um item.\n");
 		printf("2 - Para remover um item.\n");
-		printf("3 - Para imprimir a fila em sua totalidade.\n");
+		printf("3 - Para imprimir a fila circular.\n");
+		printf("4 - Para depurar a fila.\n");
 		printf("0 - Para encerrar o programa\n");
 		scanf("%i", &menu);
 
@@ -93,7 +143,10 @@ int main() {
 			break;
 		case 3:
 			printf("\nImprimir:\n");
-			//imprimeLista(&fila);
+			ImprimeFila(&fila);
+			break;
+		case 4:
+			depurarFila(&fila);
 			break;
 		case 0:
 			printf("\nVoce escolheu encerrar o programa...\n");
